@@ -1,25 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
+import { Home, Login, Register, EventForm, Events } from './components';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import puzzleLogo from './assets/images/puzzle.png';
+import NavBar from './components/NavBar/NavBar';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <NavBar />
+      <h1 id="title">
+        assemble{' '}
+        <img src={puzzleLogo} alt="puzzle logo" style={{ width: '40px' }} />
+      </h1>
+      <Switch>
+        <Route path="/login" exact component={Login} />
+        <Route path="/register" exact component={Register} />
+        <Route path="/" exact component={Home} />
+        <Route path="/event-form" exact component={EventForm} />
+        <Route path="/events" exact component={Events} />
+      </Switch>
+    </Router>
   );
-}
+};
 
 export default App;
