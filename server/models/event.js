@@ -15,9 +15,9 @@ const EventSchema = new mongoose.Schema(
     },
     date: {
       type: Date,
-      required: true,
+      default: Date.now
     },
-    sport: {
+    eventType: {
       type: String,
       required: true,
     },
