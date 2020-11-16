@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  Nav,
-  NavItem,
-} from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, Nav, NavItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 const NavBar = () => {
@@ -27,6 +21,16 @@ const NavBar = () => {
             <NavItem>
               <Link to="/register" style={{ color: 'black' }}>
                 Register
+              </Link>
+            </NavItem>
+            <NavItem>
+              <Link to="/event-form" style={{ color: 'black' }}>
+                Create Event
+              </Link>
+            </NavItem>
+            <NavItem>
+              <Link to="/events" style={{ color: 'black' }}>
+                Events
               </Link>
             </NavItem>
           </Nav>
