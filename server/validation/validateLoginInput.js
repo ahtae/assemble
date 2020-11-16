@@ -1,5 +1,5 @@
 const Validator = require('validator');
-const validText = require('./valid_text');
+const validText = require('./validText');
 
 const validateLoginInput = (data) => {
   const errors = {};
