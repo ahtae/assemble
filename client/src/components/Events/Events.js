@@ -5,8 +5,10 @@ import './Events.css';
 import Event from './Event/Event';
 
 const Events = ({ history }) => {
+  const userId = localStorage.getItem('userId');
+
   const [events, setEvents] = useState([]);
-  const [filter, setFilter] = useState(null);
+  const [filter, setFilter] = useState('');
 
   const getEvents = async (filter) => {
     try {
@@ -24,8 +26,42 @@ const Events = ({ history }) => {
     getEvents();
   }, []);
 
-  const handleFilterClick = (eventType) => {
-    setFilter(eventType);
+  const handleFilterClick = async (eventType) => {
+    if (eventType !== filter) {
+      try {
+        const response = await axios.get(`/api/events/${eventType}`);
+        const { events } = response.data;
+
+        setFilter(eventType);
+        setEvents(events);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleDeleteClick = async (eventId) => {
+    try {
+      await axios.delete(`/api/users/${userId}/events/${eventId}`);
+
+      getEvents();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMyEventsClick = async () => {
+    if (filter !== 'myevents') {
+      try {
+        const response = await axios.get(`/api/users/${userId}/events`);
+        const { events } = response.data;
+
+        setFilter('myevents');
+        setEvents(events);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   return (
@@ -34,8 +70,8 @@ const Events = ({ history }) => {
         <div id="filter-buttons">
           <ButtonGroup>
             <Button
-              onClick={() => handleFilterClick(null)}
-              active={filter === null}
+              onClick={() => handleFilterClick('')}
+              active={filter === ''}
             >
               All Events
             </Button>
@@ -64,7 +100,7 @@ const Events = ({ history }) => {
               Art Events
             </Button>
             <Button
-              onClick={() => handleFilterClick('myevents')}
+              onClick={handleMyEventsClick}
               active={filter === 'myevents'}
             >
               My events
@@ -76,7 +112,10 @@ const Events = ({ history }) => {
         {events.map((event) => {
           return (
             <React.Fragment key={event.id}>
-              <Event event={event} />
+              <Event
+                event={event}
+                handleDeleteClick={() => handleDeleteClick(event.id)}
+              />
             </React.Fragment>
           );
         })}
