@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Button,
   Form,
@@ -15,7 +15,7 @@ import {
 } from 'reactstrap';
 import cameraIcon from '../../assets/images/CameraIcon.png';
 import './EventForm.css';
-import axios from 'axios';
+import userService from '../../services/users';
 
 const EventForm = ({ history }) => {
   const [title, setTitle] = useState('');
@@ -29,9 +29,18 @@ const EventForm = ({ history }) => {
   const [message, setMessage] = useState('');
   const [dropDownOpen, setDropDownOpen] = useState(false);
 
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
+
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
+
   const preview = useMemo(() => {
     return thumbnail ? URL.createObjectURL(thumbnail) : null;
   }, [thumbnail]);
+
+  const backgroundImage = thumbnail ? `url(${preview})` : null;
 
   const toggle = () => setDropDownOpen(!dropDownOpen);
 
@@ -63,10 +72,26 @@ const EventForm = ({ history }) => {
     setDate(event.target.value);
   };
 
+  useEffect(() => {
+    if (!token) history.push('/');
+  }, [history, token]);
+
   const handleSubmitClick = async (event) => {
     event.preventDefault();
 
     try {
+      const eventData = new FormData();
+
+      eventData.append('thumbnail', thumbnail);
+      eventData.append('eventType', eventType);
+      eventData.append('title', title);
+      eventData.append('price', price);
+      eventData.append('description', description);
+      eventData.append('date', date);
+
+      await userService.createEventOfUser(userId, eventData, config);
+
+      history.push('/events');
     } catch (error) {
       console.log(error);
     }
@@ -75,7 +100,7 @@ const EventForm = ({ history }) => {
   return (
     <Container className="form-container">
       <h2>Create Event</h2>
-      <Form>
+      <Form onSubmit={handleSubmitClick}>
         <Col>
           <FormGroup>
             <Label for="title">Title</Label>
@@ -123,16 +148,15 @@ const EventForm = ({ history }) => {
               id="thumbnail"
               className={thumbnail ? 'has-thumbnail' : ''}
               style={{
-                backgroundImage: `url(${preview})`,
-                paddingTop: '100px',
-                width: '100px',
+                backgroundImage,
+                width: '400px',
                 height: '100px',
               }}
             >
               <img
                 src={cameraIcon}
                 alt="Upload icon"
-                style={{ maxWidth: '50px' }}
+                style={{ maxWidth: '100px' }}
               />
               <Input type="file" onChange={handleThumbnailChange} />
             </Label>
