@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const validateRegistrationInput = require('../validation/validateRegistrationInput');
 const validateLoginInput = require('../validation/validateLoginInput');
+const jwt = require('jsonwebtoken');
+const config = require('../utils/config');
 
 authRouter.post('/login', async (req, res, next) => {
   const { errors, isValid } = validateLoginInput(req.body);
@@ -20,7 +22,14 @@ authRouter.post('/login', async (req, res, next) => {
       const isCorrectPassword = await bcrypt.compare(password, user.password);
 
       if (isCorrectPassword) {
-        res.json({ data: user });
+        const userForToken = {
+          id: user._id,
+          email: user.email,
+        };
+
+        const token = jwt.sign(userForToken, config.JWT_SECRET);
+
+        res.status(200).send({ token, userId: user._id });
       } else {
         res.status(400).json({ message: 'Wrong email or password!' });
       }
@@ -53,10 +62,14 @@ authRouter.post('/register', async (req, res, next) => {
         lastName,
         password: hashedPassword,
       });
+      const userForToken = {
+        id: user._id,
+        email: user.email,
+      };
 
-      res.json(user);
-    } else {
-      res.status(400).json({ message: 'User does not exist!' });
+      const token = jwt.sign(userForToken, config.JWT_SECRET);
+
+      res.status(200).send({ token, userId: user.id });
     }
   } catch (error) {
     next(error);
