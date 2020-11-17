@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./index.js",
-    "dev": "nodemon ./index.js"
+    "dev": "nodemon ./index.js",
+    "eslint": "eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +22,7 @@
     "validator": "^13.1.17"
   },
   "devDependencies": {
+    "eslint": "^7.13.0",
     "nodemon": "^2.0.6"
   }
 }
