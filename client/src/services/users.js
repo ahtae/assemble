@@ -1,23 +1,20 @@
 import axios from 'axios';
 
-const baseUrl = '/api/users/';
-let token = null;
+const baseUrl = 'http://localhost:8000/api/users';
 
-const getUser = async (userId) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-
+const getUser = async (userId, config) => {
   const response = await axios.get(`${baseUrl}/${userId}`, config);
 
   return response.data;
 };
 
-const createEventOfUser = async (userId, newObject) => {
-  const config = {
-    headers: { Authorization: token },
-  };
+const getEventsOfUser = async (userId, config) => {
+  const response = await axios.get(`${baseUrl}/${userId}/events`, config);
 
+  return response.data;
+};
+
+const createEventOfUser = async (userId, newObject, config) => {
   const response = await axios.post(
     `${baseUrl}/${userId}/events`,
     newObject,
@@ -27,11 +24,7 @@ const createEventOfUser = async (userId, newObject) => {
   return response.data;
 };
 
-const deleteEventOfUser = async (userId, eventId, newObject) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-
+const deleteEventOfUser = async (userId, eventId, newObject, config) => {
   const response = await axios.delete(
     `${baseUrl}/${userId}/events/${eventId}`,
     newObject,
@@ -41,10 +34,11 @@ const deleteEventOfUser = async (userId, eventId, newObject) => {
   return response.data;
 };
 
-const usersService = {
+const userService = {
   getUser,
   createEventOfUser,
   deleteEventOfUser,
+  getEventsOfUser,
 };
 
-export default usersService;
+export default userService;
