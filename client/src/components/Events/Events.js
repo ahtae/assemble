@@ -1,19 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, ButtonGroup } from 'reactstrap';
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  DropdownMenu,
+} from 'reactstrap';
 import './Events.css';
 import Event from './Event/Event';
 
 const Events = ({ history }) => {
   const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
 
   const [events, setEvents] = useState([]);
   const [filter, setFilter] = useState('');
 
+  const [dropDownOpen, setDropDownOpen] = useState(false);
+
+  const toggle = () => setDropDownOpen(!dropDownOpen);
+
   const getEvents = async (filter) => {
     try {
       const url = filter ? `/api/events/${filter}` : '/api/events';
-      const response = await axios.get(url);
+      const response = await axios.get(url, {
+        headers: { Authorization: `bearer ${token}` },
+      });
       const { events } = response.data;
 
       setEvents(events);
@@ -68,44 +81,45 @@ const Events = ({ history }) => {
     <div>
       <div>
         <div id="filter-buttons">
-          <ButtonGroup>
-            <Button
-              onClick={() => handleFilterClick('')}
-              active={filter === ''}
-            >
-              All Events
-            </Button>
-            <Button
-              onClick={() => handleFilterClick('dancing')}
-              active={filter === 'dancing'}
-            >
-              Dancing Events
-            </Button>
-            <Button
-              onClick={() => handleFilterClick('running')}
-              active={filter === 'running'}
-            >
-              Running Events
-            </Button>
-            <Button
-              onClick={() => handleFilterClick('learning')}
-              active={filter === 'learning'}
-            >
-              Learning Events
-            </Button>
-            <Button
-              onClick={() => handleFilterClick('art')}
-              active={filter === 'art'}
-            >
-              Art Events
-            </Button>
-            <Button
-              onClick={handleMyEventsClick}
-              active={filter === 'myevents'}
-            >
-              My events
-            </Button>
-          </ButtonGroup>
+          <Dropdown isOpen={dropDownOpen} toggle={toggle}>
+            <DropdownToggle caret>Filter Events</DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem
+                onClick={() => handleFilterClick('')}
+                active={filter === ''}
+              >
+                All Events
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => handleFilterClick('dancing')}
+                active={filter === 'dancing'}
+              >
+                Dancing Events
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => handleFilterClick('running')}
+                active={filter === 'running'}
+              >
+                Running Events
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => handleFilterClick('learning')}
+                active={filter === 'learning'}
+              >
+                Learning Events
+              </DropdownItem>
+
+              <DropdownItem
+                onClick={() => handleFilterClick('art')}
+                active={filter === 'art'}
+              >
+                Art Events
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+          <Button onClick={handleMyEventsClick} active={filter === 'myevents'}>
+            My events
+          </Button>
         </div>
       </div>
       <div id="events">

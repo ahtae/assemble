@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Button,
   Form,
@@ -9,8 +9,10 @@ import {
   Col,
 } from 'reactstrap';
 import axios from 'axios';
+import {UserContext} from '../../userContext';
 
 const Login = ({ history }) => {
+  const { setIsLoggedIn} = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -34,6 +36,11 @@ const Login = ({ history }) => {
         email,
         password,
       });
+      const { token, userId } = response.data;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('userId', userId);
+      setIsLoggedIn(true);
 
       history.push('/events');
     } catch (error) {

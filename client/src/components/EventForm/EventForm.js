@@ -15,6 +15,7 @@ import {
 } from 'reactstrap';
 import cameraIcon from '../../assets/images/CameraIcon.png';
 import './EventForm.css';
+import axios from 'axios';
 
 const EventForm = ({ history }) => {
   const [title, setTitle] = useState('');
@@ -60,6 +61,15 @@ const EventForm = ({ history }) => {
 
   const handleDateChange = (event) => {
     setDate(event.target.value);
+  };
+
+  const handleSubmitClick = async (event) => {
+    event.preventDefault();
+
+    try {
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -154,7 +164,6 @@ const EventForm = ({ history }) => {
             </ButtonDropdown>
           </FormGroup>
         </Col>
-
         <Col>
           <FormGroup>
             <Label>Date: </Label>

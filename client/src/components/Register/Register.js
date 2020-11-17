@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Button,
   Form,
@@ -10,13 +10,16 @@ import {
 } from 'reactstrap';
 import './Register.css';
 import axios from 'axios';
+import { UserContext } from '../../userContext';
 
 const Register = ({ history }) => {
+  const { setIsLoggedIn } = useContext(UserContext);
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [message, setMessage] = useState('');
   const handleFirstNameChange = (event) => {
     setFirstName(event.target.value);
   };
@@ -48,7 +51,22 @@ const Register = ({ history }) => {
         lastName,
       });
 
-      history.push('/events');
+      const { token, userId } = response.data;
+
+      if (token && userId) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('userId', userId);
+        setIsLoggedIn(true);
+
+        history.push('/events');
+      } else {
+        const { message } = response.data;
+
+        setMessage(message);
+        setTimeout(() => {
+          setMessage('');
+        });
+      }
     } catch (error) {
       console.log(error);
     }
