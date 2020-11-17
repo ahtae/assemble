@@ -2,12 +2,17 @@ import React from 'react';
 import { Button } from 'reactstrap';
 import moment from 'moment';
 
-const Event = ({ event }) => {
-  console.log(event);
+const Event = ({ event, handleDeleteClick }) => {
+  const userId = localStorage.getItem('userId');
+
   return (
     <div className="event">
       <h3>{event.title}</h3>
-      <img src={event.thumbnail_url} style={{ width: '70%' }} />
+      <img
+        src={event.thumbnail_url}
+        alt={event.title}
+        style={{ width: '70%' }}
+      />
       <div>
         <span>
           <b>Date: </b>
@@ -30,7 +35,12 @@ const Event = ({ event }) => {
         </span>
       </div>
       <br />
-      <Button color="danger">Subscribe</Button>
+      <Button color="primary">Subscribe</Button>{' '}
+      {event.user === userId ? (
+        <Button color="danger" onClick={handleDeleteClick}>
+          Delete
+        </Button>
+      ) : null}
     </div>
   );
 };
