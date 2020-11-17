@@ -9,8 +9,8 @@ import {
   Col,
 } from 'reactstrap';
 import './Register.css';
-import axios from 'axios';
 import { UserContext } from '../../userContext';
+import authService from '../../services/auth';
 
 const Register = ({ history }) => {
   const { setIsLoggedIn } = useContext(UserContext);
@@ -44,14 +44,14 @@ const Register = ({ history }) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('/api/auth/user/register', {
+      const data = await authService.register({
         email,
         password,
         firstName,
         lastName,
       });
 
-      const { token, userId } = response.data;
+      const { token, userId } = data;
 
       if (token && userId) {
         localStorage.setItem('token', token);
@@ -60,7 +60,7 @@ const Register = ({ history }) => {
 
         history.push('/events');
       } else {
-        const { message } = response.data;
+        const { message } = data;
 
         setMessage(message);
         setTimeout(() => {
@@ -71,6 +71,7 @@ const Register = ({ history }) => {
       console.log(error);
     }
   };
+
   return (
     <Container className="form-container">
       <h2>Register</h2>

@@ -8,11 +8,11 @@ import {
   Container,
   Col,
 } from 'reactstrap';
-import axios from 'axios';
-import {UserContext} from '../../userContext';
+import { UserContext } from '../../userContext';
+import authService from '../../services/auth';
 
 const Login = ({ history }) => {
-  const { setIsLoggedIn} = useContext(UserContext);
+  const { setIsLoggedIn } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -32,11 +32,12 @@ const Login = ({ history }) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('/api/auth/user/login', {
+      const data = await authService.login({
         email,
         password,
       });
-      const { token, userId } = response.data;
+
+      const { token, userId } = data;
 
       localStorage.setItem('token', token);
       localStorage.setItem('userId', userId);
