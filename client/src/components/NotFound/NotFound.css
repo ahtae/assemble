@@ -1,0 +1,13 @@
+#not-found-container {
+  background-color: #D8E2DC;
+  margin: 30px;
+  padding: 100px;
+  border: 3px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#not-found-image {
+  width: 60%;
+}
