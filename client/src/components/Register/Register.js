@@ -20,6 +20,7 @@ const Register = ({ history }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+
   const handleFirstNameChange = (event) => {
     setFirstName(event.target.value);
   };
@@ -75,7 +76,7 @@ const Register = ({ history }) => {
   return (
     <Container className="form-container">
       <h2>Register</h2>
-      <Form onClick={handleSubmitClick}>
+      <Form onSubmit={handleSubmitClick}>
         <Col>
           <FormGroup>
             <Label for="firstName">First Name</Label>
