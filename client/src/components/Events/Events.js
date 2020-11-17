@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
   Button,
   Dropdown,
@@ -9,25 +8,26 @@ import {
 } from 'reactstrap';
 import './Events.css';
 import Event from './Event/Event';
+import userService from '../../services/users';
+import eventService from '../../services/events';
 
 const Events = ({ history }) => {
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
-
   const [events, setEvents] = useState([]);
   const [filter, setFilter] = useState('');
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
 
   const [dropDownOpen, setDropDownOpen] = useState(false);
 
   const toggle = () => setDropDownOpen(!dropDownOpen);
 
-  const getEvents = async (filter) => {
+  const getEvents = async () => {
     try {
-      const url = filter ? `/api/events/${filter}` : '/api/events';
-      const response = await axios.get(url, {
-        headers: { Authorization: `bearer ${token}` },
-      });
-      const { events } = response.data;
+      const data = await eventService.getAllEvents(config);
+      const { events } = data;
 
       setEvents(events);
     } catch (error) {
@@ -36,14 +36,18 @@ const Events = ({ history }) => {
   };
 
   useEffect(() => {
-    getEvents();
-  }, []);
+    if (token) {
+      getEvents();
+    } else {
+      history.push('/');
+    }
+  });
 
   const handleFilterClick = async (eventType) => {
     if (eventType !== filter) {
       try {
-        const response = await axios.get(`/api/events/${eventType}`);
-        const { events } = response.data;
+        const data = await eventService.getEventsByEventType(eventType, config);
+        const { events } = data;
 
         setFilter(eventType);
         setEvents(events);
@@ -55,7 +59,7 @@ const Events = ({ history }) => {
 
   const handleDeleteClick = async (eventId) => {
     try {
-      await axios.delete(`/api/users/${userId}/events/${eventId}`);
+      await userService.deleteEventOfUser(userId, eventId, config);
 
       getEvents();
     } catch (error) {
@@ -66,8 +70,8 @@ const Events = ({ history }) => {
   const handleMyEventsClick = async () => {
     if (filter !== 'myevents') {
       try {
-        const response = await axios.get(`/api/users/${userId}/events`);
-        const { events } = response.data;
+        const data = await userService.getEventsOfUser(userId, config);
+        const { events } = data;
 
         setFilter('myevents');
         setEvents(events);
