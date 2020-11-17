@@ -11,10 +11,12 @@ const EventSchema = new mongoose.Schema({
   },
   thumbnail: {
     type: String,
+    required: true
   },
   date: {
     type: Date,
     default: Date.now,
+    required: true
   },
   eventType: {
     type: String,
