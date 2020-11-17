@@ -3,7 +3,7 @@ import './Home.css';
 import creativityImage from '../../assets/images/Creativity.svg';
 import learningImage from '../../assets/images/Learning Online.svg';
 import presentationImage from '../../assets/images/Presentation.svg';
-import { Button, ButtonGroup } from 'reactstrap';
+import { Button } from 'reactstrap';
 
 const Home = ({ history }) => {
   const handleLoginClick = () => {
